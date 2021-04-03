@@ -1,17 +1,3 @@
-""" Scrape the index file in the folder
-from bs4 import BeautifulSoup
-
-with open('index.html', 'r') as html_file:
-    content = html_file.read()
-
-    soup = BeautifulSoup(content, 'lxml')
-    course_cards = soup.find_all('div', class_='card')
-    for course in course_cards:
-        course_name = course.h5.text
-        course_price = course.a.text
-        print(f'{course_name} costs {course_price.split()[-1]}.')
- """
-
 from bs4 import BeautifulSoup
 import requests
 
@@ -42,5 +28,17 @@ class ChessRScraper:
             last_update = tournament_info[2]
             print(f'{number}) Title: {title}, last update: {last_update.text}')
 
+    def printLastDay(self):
+        tournaments = self.soup.find_all('tr', class_=self.tag)
+
+        for tournament in tournaments:
+            tournament_info = tournament.find_all('td')
+            number = tournament_info[0].text
+            title = tournament_info[1].text
+            last_update = tournament_info[2].text
+            if('Days' not in last_update):
+                print(f'{number}) Title: {title}, last update: {last_update}')
+
 
 bul = ChessRScraper('https://chess-results.com/fed.aspx?lan=1&fed=BUL')
+bul.printLastDay()
