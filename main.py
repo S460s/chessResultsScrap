@@ -26,9 +26,9 @@ class ChessRScraper:
         players = soup.find_all('tr', class_=self.tag)
         print('First 3 players are: ')
         for i in range(3):
-            playerInfo = players[i].find_all('td')
+            name = players[i].find_all('a')[0].text
             elo = players[i].find('td', class_='CRr').text
-            print(f'    Name: {playerInfo[3].text}. ELO: {elo}')
+            print(f'    Name: {name}. ELO: {elo}')
 
     def printTouraments(self):
         tournaments = self.soup.find_all('tr', class_=self.tag)
@@ -58,22 +58,20 @@ class ChessRScraper:
                 print('----------------------------------------------------')
 
 
-scrapper = ChessRScraper('https://chess-results.com/fed.aspx?lan=1&fed=LTU')
-scrapper.printLastDay()
+url = input(
+    'Enter a url to a ChessResults tourament page (should be in English).')
+search = input(
+    'Do you want all tournaments or the ones from the last day? (all, lastday)')
+time_wait = input('Time deley (in mins)')
 
 
-""" if __name__ == '__main__':
-    url = input(
-        'Enter a url to a ChessResults tourament page (should be in English).')
-    search = input(
-        'Do you want all tournaments or the ones from the last day? (all, lastday)')
-    time_wait = input('Time deley (in mins)')
+if __name__ == '__main__':
     scrapper = ChessRScraper(url)
     while True:
-            if search.strip() == 'all':
-                scrapper.printTouraments()
-            elif search.strip() == 'lastday':
-                scrapper.printLastDay()
-            print(search)
-            print(f'Waiting {time_wait} minutes...')
-            time.sleep(int(time_wait) * 60) """
+        if search.strip() == 'all':
+            scrapper.printTouraments()
+        elif search.strip() == 'lastday':
+            scrapper.printLastDay()
+        print(search)
+        print(f'Waiting {time_wait} minutes...')
+        time.sleep(int(time_wait) * 60)
