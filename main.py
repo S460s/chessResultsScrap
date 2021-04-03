@@ -27,6 +27,8 @@ class ChessRScraper:
             title = tournament_info[1].text
             last_update = tournament_info[2]
             print(f'{number}) Title: {title}, last update: {last_update.text}')
+            print(f"Link to tournament: {tournament_info[1].a['href']}")
+            print('----------------------------------------------------')
 
     def printLastDay(self):
         tournaments = self.soup.find_all('tr', class_=self.tag)
@@ -38,6 +40,9 @@ class ChessRScraper:
             last_update = tournament_info[2].text
             if('Days' not in last_update):
                 print(f'{number}) Title: {title}, last update: {last_update}')
+                print(
+                    f"Link to tournament: https://chess-results.com/{tournament_info[1].a['href']}")
+                print('----------------------------------------------------')
 
 
 bul = ChessRScraper('https://chess-results.com/fed.aspx?lan=1&fed=BUL')
