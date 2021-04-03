@@ -1,1 +1,1 @@
-My first scraper.
+ChessResultsScraper.
