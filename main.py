@@ -31,6 +31,7 @@ class ChessRScraper:
             title = tournament_info[1].text
             last_update = tournament_info[2]
             print(f'{number}) Title: {title}, last update: {last_update.text}')
+            self.printFirst3(tournament_info[1].a['href'])
             print(f"Link: {tournament_info[1].a['href']}")
             print('----------------------------------------------------')
 
