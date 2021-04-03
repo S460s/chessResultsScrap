@@ -4,20 +4,12 @@ import time
 
 
 class ChessRScraper:
-    def set_tournamentUrls(self):
-        tournaments = self.soup.find_all('tr', class_=self.tag)
-        links = []
-        for tournament in tournaments:
-            tournament_info = tournament.find_all('td')
-            links.append(tournament_info[1].a['href'])
-        return links
-
-    def __init__(self, url):
-        self.url = url
-        self.html = requests.get(self.url).text
+    def __init__(self, tag):
+        self.tag = tag
+        self.html = requests.get(
+            f'https://chess-results.com/fed.aspx?lan=1&fed={self.tag}').text
         self.soup = BeautifulSoup(self.html, 'lxml')
-        self.tag = self.url[len(self.url) - 3: len(self.url)]
-        self.touramentUrls = self.set_tournamentUrls()
+        self.url = f'https://chess-results.com/fed.aspx?lan=1&fed={self.tag}'
 
     def printFirst3(self, url):
         fullUrl = f'https://chess-results.com/{url}'
@@ -25,7 +17,7 @@ class ChessRScraper:
         soup = BeautifulSoup(html, 'lxml')
         players = soup.find_all('tr', class_=self.tag)
         print('First 3 players are: ')
-        for i in range(3):
+        for i in range(min(len(players), 3)):
             name = players[i].find_all('a')[0].text
             elo = players[i].find('td', class_='CRr').text
             print(f'    Name: {name}. ELO: {elo}')
@@ -58,15 +50,14 @@ class ChessRScraper:
                 print('----------------------------------------------------')
 
 
-url = input(
-    'Enter a url to a ChessResults tourament page (should be in English).')
+tag = input('Enter federation abbreviation (e.g. BUL for Bulgaria)')
 search = input(
     'Do you want all tournaments or the ones from the last day? (all, lastday)')
 time_wait = input('Time deley (in mins)')
 
 
 if __name__ == '__main__':
-    scrapper = ChessRScraper(url)
+    scrapper = ChessRScraper(tag)
     while True:
         if search.strip() == 'all':
             scrapper.printTouraments()
