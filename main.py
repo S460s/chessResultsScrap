@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import time
 
 
 class ChessRScraper:
@@ -27,7 +28,7 @@ class ChessRScraper:
             title = tournament_info[1].text
             last_update = tournament_info[2]
             print(f'{number}) Title: {title}, last update: {last_update.text}')
-            print(f"Link to tournament: {tournament_info[1].a['href']}")
+            print(f"Link: {tournament_info[1].a['href']}")
             print('----------------------------------------------------')
 
     def printLastDay(self):
@@ -41,9 +42,20 @@ class ChessRScraper:
             if('Days' not in last_update):
                 print(f'{number}) Title: {title}, last update: {last_update}')
                 print(
-                    f"Link to tournament: https://chess-results.com/{tournament_info[1].a['href']}")
+                    f"Link: https://chess-results.com/{tournament_info[1].a['href']}")
                 print('----------------------------------------------------')
 
 
 bul = ChessRScraper('https://chess-results.com/fed.aspx?lan=1&fed=BUL')
-bul.printLastDay()
+
+search = input(
+    'Do you want all tournaments or the ones from the last day? (all, lastday)')
+if __name__ == '__main__':
+    time_wait = 10
+    while True:
+        if search == 'all':
+            bul.printTouraments()
+        elif search == 'lastday':
+            bul.printLastDay()
+        print(f'Waiting {time_wait} minutes...')
+        time.sleep(time_wait * 60)
