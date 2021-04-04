@@ -77,7 +77,10 @@ class FindPlayer:
         soup = BeautifulSoup(html, 'lxml')
         players = soup.find_all('tr', class_=['CRg1', 'CRg2'])
         for player in players:
-            print(player.find_all('a')[0].text.strip(), self.name.strip())
+            if player.find_all('a')[0].text.strip() == self.name.strip():
+                print('----------------------------------------------------')
+                print(f'{self.name} has or is playing played in {title}.')
+                print(f'Link: {url}')
 
     def look_for_player(self, tag):
         fullUrl = f'https://chess-results.com/fed.aspx?lan=1&fed={tag}'
@@ -92,9 +95,9 @@ class FindPlayer:
                 f"https://chess-results.com/{tournament_info[1].a['href']}", tag, title)
 
 
-""" playerSearch = FindPlayer('Nikolov Momchil')
-playerSearch.look_for_player('BUL') """
+playerSearch = FindPlayer('Nikolov Momchil')
+playerSearch.look_for_player('BUL')
 
 
 if __name__ == '__main__':
-    startTouramentScrape()
+    """startTouramentScrape()"""
