@@ -67,5 +67,28 @@ def startTouramentScrape():
         time.sleep(int(time_wait) * 60)
 
 
+class FindPlayer:
+    def __init__(self, name):
+        self.name = name
+
+    def look_into_tourament(self, url):
+        print(url)
+
+    def look_for_player(self, tag):
+        fullUrl = f'https://chess-results.com/fed.aspx?lan=1&fed={tag}'
+        html = requests.get(fullUrl).text
+        soup = BeautifulSoup(html, 'lxml')
+        tournaments = soup.find_all('tr', class_=tag)
+        """ Find all touraments """
+        for tournament in tournaments:
+            tournament_info = tournament.find_all('td')
+            self.look_into_tourament(
+                f"https://chess-results.com/{tournament_info[1].a['href']}")
+
+
+playerSearch = FindPlayer('Konstantin Georgiev')
+playerSearch.look_for_player('BUL')
+
+
 if __name__ == '__main__':
-    startTouramentScrape()
+    """ startTouramentScrape() """
