@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
 import time
+import colorama
+from colorama import Fore, Back, Style
+colorama.init(autoreset=True)
 
 
 class ChessRScraper:
@@ -16,12 +19,12 @@ class ChessRScraper:
         html = requests.get(fullUrl).text
         soup = BeautifulSoup(html, 'lxml')
         players = soup.find_all('tr', class_=['CRg1', 'CRg2'])
-        print(f'Total number of players: {len(players)}')
-        print('First 3 players are: ')
+        print(f'Total number of players: {Fore.BLUE}{len(players)}')
+        print(f'First {Fore.BLUE}3{Fore.RESET} players are: ')
         for i in range(min(len(players), 3)):
             name = players[i].find_all('a')[0].text
             elo = players[i].find('td', class_='CRr').text
-            print(f'    Name: {name}. ELO: {elo}')
+            print(f'{Fore.GREEN}    Name: {name}. ELO: {elo}')
 
     def printTouraments(self):
         tournaments = self.soup.find_all('tr', class_=self.tag)
@@ -31,10 +34,11 @@ class ChessRScraper:
             number = tournament_info[0].text
             title = tournament_info[1].text
             last_update = tournament_info[2]
-            print(f'{number}) Title: {title}, last update: {last_update.text}')
+            print(
+                f'{Fore.YELLOW}{number}) Title: {title}, {Fore.BLUE}last update: {last_update.text}{Fore.RESET}')
             self.printFirst3(tournament_info[1].a['href'])
-            print(f"Link: {tournament_info[1].a['href']}")
-            print('----------------------------------------------------')
+            print(f"{Fore.CYAN}Link: {tournament_info[1].a['href']}")
+            print(Fore.WHITE + '----------------------------------------------------')
 
     def printLastDay(self):
         tournaments = self.soup.find_all('tr', class_=self.tag)
@@ -45,18 +49,21 @@ class ChessRScraper:
             title = tournament_info[1].text
             last_update = tournament_info[2].text
             if('Days' not in last_update):
-                print(f'{number}) Title: {title}, last update: {last_update}')
+                print(
+                    f'{Fore.YELLOW}{number}) Title: {title}, {Fore.BLUE}last update: {last_update}{Fore.RESET}')
                 self.printFirst3(tournament_info[1].a['href'])
                 print(
-                    f"Link: https://chess-results.com/{tournament_info[1].a['href']}")
-                print('----------------------------------------------------')
+                    f"{Fore.CYAN}Link: https://chess-results.com/{tournament_info[1].a['href']}")
+                print(Fore.WHITE +
+                      '----------------------------------------------------')
 
 
 def startTouramentScrape():
-    tag = input('Enter federation abbreviation (e.g. BUL for Bulgaria)')
+    tag = input(
+        f'Enter federation abbreviation {Fore.BLUE}(e.g. BUL for Bulgaria){Fore.RESET}: ')
     search = input(
-        'Do you want all tournaments or the ones from the last day? (all, lastday)')
-    time_wait = input('Time deley (in mins)')
+        f'Do you want all tournaments or the ones from the last day?{Fore.BLUE}(all, lastday){Fore.RESET}: ')
+    time_wait = input(f'Time deley {Fore.BLUE}(in mins){Fore.RESET}: ')
     scrapper = ChessRScraper(tag)
     while True:
         if search.strip() == 'all':
@@ -64,7 +71,7 @@ def startTouramentScrape():
         elif search.strip() == 'lastday':
             scrapper.printLastDay()
         print(search)
-        print(f'Waiting {time_wait} minutes...')
+        print(f'Waiting {Fore.RED}{time_wait}{Fore.RESET} minutes...')
         time.sleep(int(time_wait) * 60)
 
 
@@ -78,8 +85,9 @@ class FindPlayer:
         players = soup.find_all('tr', class_=['CRg1', 'CRg2'])
         for player in players:
             if player.find_all('a')[0].text.strip() == self.name.strip():
-                print('----------------------------------------------------')
-                print(f'{self.name} has or is playing played in {title}.')
+                print(Fore.WHITE +
+                      '----------------------------------------------------')
+                print(f'{self.name} has played or is playing in {title}.')
                 print(f'Link: {url}')
 
     def look_for_player(self, tag):
@@ -88,16 +96,17 @@ class FindPlayer:
         soup = BeautifulSoup(html, 'lxml')
         tournaments = soup.find_all('tr', class_=tag)
         """ Find all touraments """
-        for tournament in [tournaments[0]]:
+        for tournament in tournaments:
             tournament_info = tournament.find_all('td')
             title = tournament_info[1].text
             self.look_into_tourament(
                 f"https://chess-results.com/{tournament_info[1].a['href']}", tag, title)
 
 
-playerSearch = FindPlayer('Nikolov Momchil')
-playerSearch.look_for_player('BUL')
+""" 
+playerSearch = FindPlayer('Georgiev Konstantin')
+playerSearch.look_for_player('BUL') """
 
 
 if __name__ == '__main__':
-    """startTouramentScrape()"""
+    startTouramentScrape()
