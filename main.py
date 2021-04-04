@@ -51,13 +51,11 @@ class ChessRScraper:
                 print('----------------------------------------------------')
 
 
-tag = input('Enter federation abbreviation (e.g. BUL for Bulgaria)')
-search = input(
-    'Do you want all tournaments or the ones from the last day? (all, lastday)')
-time_wait = input('Time deley (in mins)')
-
-
-if __name__ == '__main__':
+def startTouramentScrape():
+    tag = input('Enter federation abbreviation (e.g. BUL for Bulgaria)')
+    search = input(
+        'Do you want all tournaments or the ones from the last day? (all, lastday)')
+    time_wait = input('Time deley (in mins)')
     scrapper = ChessRScraper(tag)
     while True:
         if search.strip() == 'all':
@@ -67,3 +65,7 @@ if __name__ == '__main__':
         print(search)
         print(f'Waiting {time_wait} minutes...')
         time.sleep(int(time_wait) * 60)
+
+
+if __name__ == '__main__':
+    startTouramentScrape()
