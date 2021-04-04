@@ -15,7 +15,8 @@ class ChessRScraper:
         fullUrl = f'https://chess-results.com/{url}'
         html = requests.get(fullUrl).text
         soup = BeautifulSoup(html, 'lxml')
-        players = soup.find_all('tr', class_=self.tag)
+        players = soup.find_all('tr', class_=['CRg1', 'CRg2'])
+        print(f'Total number of players: {len(players)}')
         print('First 3 players are: ')
         for i in range(min(len(players), 3)):
             name = players[i].find_all('a')[0].text
@@ -71,8 +72,12 @@ class FindPlayer:
     def __init__(self, name):
         self.name = name
 
-    def look_into_tourament(self, url):
-        print(url)
+    def look_into_tourament(self, url, tag, title):
+        html = requests.get(url).text
+        soup = BeautifulSoup(html, 'lxml')
+        players = soup.find_all('tr', class_=['CRg1', 'CRg2'])
+        for player in players:
+            print(player.find_all('a')[0].text.strip(), self.name.strip())
 
     def look_for_player(self, tag):
         fullUrl = f'https://chess-results.com/fed.aspx?lan=1&fed={tag}'
@@ -80,15 +85,16 @@ class FindPlayer:
         soup = BeautifulSoup(html, 'lxml')
         tournaments = soup.find_all('tr', class_=tag)
         """ Find all touraments """
-        for tournament in tournaments:
+        for tournament in [tournaments[0]]:
             tournament_info = tournament.find_all('td')
+            title = tournament_info[1].text
             self.look_into_tourament(
-                f"https://chess-results.com/{tournament_info[1].a['href']}")
+                f"https://chess-results.com/{tournament_info[1].a['href']}", tag, title)
 
 
-playerSearch = FindPlayer('Konstantin Georgiev')
-playerSearch.look_for_player('BUL')
+""" playerSearch = FindPlayer('Nikolov Momchil')
+playerSearch.look_for_player('BUL') """
 
 
 if __name__ == '__main__':
-    """ startTouramentScrape() """
+    startTouramentScrape()
